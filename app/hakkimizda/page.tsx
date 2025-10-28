@@ -88,7 +88,7 @@ export default function Hakkimizda() {
               </h2>
               <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed space-y-4">
                 <p>
-                  2004 yılında Paris'te kurulan Paris Health Clinic, sağlık turizmi alanında 
+                  2004 yılında Paris&apos;te kurulan Paris Health Clinic, sağlık turizmi alanında 
                   öncü bir kuruluş olarak faaliyetlerine başlamıştır. Amacımız, insanların 
                   hayalindeki estetik görünüme güvenli ve kaliteli yollarla ulaşmalarını sağlamaktır.
                 </p>

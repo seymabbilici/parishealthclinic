@@ -26,7 +26,7 @@ export default function Hikayemiz() {
             <div className="prose prose-lg max-w-none">
               <h2 className="text-3xl font-bold text-gray-900 mb-6">Başlangıç</h2>
               <p className="text-lg text-gray-600 leading-relaxed">
-                2004 yılında Paris'te küçük bir klinik olarak başladığımız yolculuğumuzda, 
+                2004 yılında Paris&apos;te küçük bir klinik olarak başladığımız yolculuğumuzda, 
                 amacımız her zaman müşterilerimize en yüksek kalitede sağlık hizmeti sunmaktı. 
                 İlk yıllarımızda sadece birkaç uzman doktor ve küçük bir ekip ile çalışırken, 
                 sunduğumuz kaliteli hizmet sayesinde kısa sürede güvenilir bir marka haline geldik.

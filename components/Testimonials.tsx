@@ -74,7 +74,7 @@ export default function Testimonials() {
               <div className="mb-4">
                 <Quote className="w-8 h-8 text-purple-clinic/20 mb-2" />
                 <p className="text-gray-600 leading-relaxed italic">
-                  "{testimonial.text}"
+                  &quot;{testimonial.text}&quot;
                 </p>
               </div>
 

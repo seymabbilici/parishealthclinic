@@ -14,7 +14,7 @@ export default function MommyMakeover() {
         <div className="container mx-auto px-4">
           <Link href="/blog" className="inline-flex items-center space-x-2 text-purple-clinic mb-8 hover:text-purple-700">
             <ArrowLeft className="w-5 h-5" />
-            <span>Blog'a Dön</span>
+            <span>Blog&apos;a Dön</span>
           </Link>
 
           <div className="max-w-4xl mx-auto">

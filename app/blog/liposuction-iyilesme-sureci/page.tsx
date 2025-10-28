@@ -15,7 +15,7 @@ export default function LiposuctionIyilesme() {
         <div className="container mx-auto px-4">
           <Link href="/blog" className="inline-flex items-center space-x-2 text-purple-clinic mb-8 hover:text-purple-700">
             <ArrowLeft className="w-5 h-5" />
-            <span>Blog'a Dön</span>
+            <span>Blog&apos;a Dön</span>
           </Link>
 
           <div className="max-w-4xl mx-auto">
@@ -104,7 +104,7 @@ export default function LiposuctionIyilesme() {
                 daha doğal görünür.
               </p>
               <p>
-                <strong>Şişlik belirgin şekilde azalır, nihai sonucun %70-80'i görünür hale gelir.</strong> 
+                <strong>Şişlik belirgin şekilde azalır, nihai sonucun %70-80&apos;i görünür hale gelir.</strong> 
                 Artık vücut şeklindeki değişiklikleri net bir şekilde görmeye başlarsınız.
               </p>
               <p>

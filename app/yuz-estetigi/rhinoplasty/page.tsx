@@ -11,10 +11,10 @@ export default function Rhinoplasty() {
   const faqs = [
     {
       q: 'Burun estetiği fiyatları ne kadar?',
-      a: 'Burun estetiği fiyatlarımız €3,000\'dan başlamaktadır ve işleminize göre değişiklik gösterebilir. Detaylı fiyat teklifi için bizimle iletişime geçin.',
+      a: 'Burun estetiği fiyatlarımız €3,000&apos;dan başlamaktadır ve işleminize göre değişiklik gösterebilir. Detaylı fiyat teklifi için bizimle iletişime geçin.',
     },
     {
-      q: 'İstanbul\'da burun estetiği güvenli mi?',
+      q: 'İstanbul&apos;da burun estetiği güvenli mi?',
       a: 'Evet, kesinlikle. Uluslararası sertifikalı doktorlarla ve dünya standartlarında modern tesislerde çalışıyoruz.',
     },
     {
@@ -26,8 +26,8 @@ export default function Rhinoplasty() {
       a: 'Evet, burun estetiği hem görünümünüzü iyileştirir hem de nefes problemlerinizi çözer. Doktorlarımız fonksiyonel ve estetik açıları değerlendirir.',
     },
     {
-      q: 'Ameliyattan sonra İstanbul\'da kalmam gerekiyor mu?',
-      a: 'İlk iyileşme ve takip için 7-10 gün İstanbul\'da kalmanızı öneriyoruz. Ekibimiz konaklama ayarlamalarında yardımcı olur.',
+      q: 'Ameliyattan sonra İstanbul&apos;da kalmam gerekiyor mu?',
+      a: 'İlk iyileşme ve takip için 7-10 gün İstanbul&apos;da kalmanızı öneriyoruz. Ekibimiz konaklama ayarlamalarında yardımcı olur.',
     },
     {
       q: 'Sonuçlar kalıcı mı?',
@@ -50,8 +50,8 @@ export default function Rhinoplasty() {
                   Burun Estetiği <span className="text-purple-clinic">İstanbul</span>
                 </h1>
                 <p className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed">
-                  İstanbul'da dünya standartlarında burun estetiği deneyimi. Uzman doktorlarımız, 
-                  doğal sonuçlar ve uygun fiyatlar. Hayalinizdeki burun Paris Health Clinic'te sizi bekliyor.
+                  İstanbul&apos;da dünya standartlarında burun estetiği deneyimi. Uzman doktorlarımız, 
+                  doğal sonuçlar ve uygun fiyatlar. Hayalinizdeki burun Paris Health Clinic&apos;te sizi bekliyor.
                 </p>
                 <a
                   href="https://wa.me/905444066234"
@@ -251,7 +251,7 @@ export default function Rhinoplasty() {
             <div className="text-center mb-12">
               <p className="text-purple-clinic font-semibold mb-2">Avrupa Sertifikalı</p>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                Türkiye'nin En Deneyimli Doktorları
+                Türkiye&apos;nin En Deneyimli Doktorları
               </h2>
             </div>
 
@@ -289,7 +289,7 @@ export default function Rhinoplasty() {
               </h2>
               <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed space-y-4">
                 <p>
-                  Türkiye'de <strong>burun estetiği (rhinoplasty)</strong> yaptırmak mı istiyorsunuz? 
+                  Türkiye&apos;de <strong>burun estetiği (rhinoplasty)</strong> yaptırmak mı istiyorsunuz? 
                   Paris Health Clinic İstanbul, uzman doktorları ve uygun burun estetiği fiyatlarıyla 
                   dünya standartlarında burun ameliyatı hizmeti sunuyor. Klinik, modern tesislerimiz 
                   ve on yıllarca deneyimle estetik cerrahi alanında öncü konumda.
@@ -310,7 +310,7 @@ export default function Rhinoplasty() {
               <div className="prose prose-lg max-w-none text-gray-600 leading-relaxed space-y-4">
                 <p>
                   <strong>Burun estetiği fiyat 2025</strong> işleminizin karmaşıklığına bağlı olarak 
-                  €3,000'dan başlamaktadır. Avrupa ülkelerinden farklı olarak, Türkiye'de aynı 
+                  €3,000&apos;dan başlamaktadır. Avrupa ülkelerinden farklı olarak, Türkiye&apos;de aynı 
                   yüksek kaliteli sonuçları çok daha uygun fiyatlarla elde edebilirsiniz.
                 </p>
                 <div className="bg-purple-50 rounded-2xl p-6 mt-6">
@@ -329,7 +329,7 @@ export default function Rhinoplasty() {
 
             {/* Benefits */}
             <div className="bg-gradient-to-r from-purple-clinic to-purple-700 rounded-3xl p-8 md:p-12 text-white shadow-2xl">
-              <h3 className="text-2xl md:text-3xl font-bold mb-6">Neden Türkiye'de Burun Estetiği?</h3>
+              <h3 className="text-2xl md:text-3xl font-bold mb-6">Neden Türkiye&apos;de Burun Estetiği?</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 {[
                   'Uluslararası sertifikalı uzman cerrahlar',
@@ -358,7 +358,7 @@ export default function Rhinoplasty() {
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 Sıkça Sorulan Sorular
               </h2>
-              <p className="text-gray-600">Türkiye'de burun estetiği hakkında yaygın sorular</p>
+              <p className="text-gray-600">Türkiye&apos;de burun estetiği hakkında yaygın sorular</p>
             </div>
 
             <div className="space-y-4">
