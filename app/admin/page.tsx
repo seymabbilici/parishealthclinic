@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Lock, FileText, Users, Mail, Plus, Edit, Trash2, Eye, Image as ImageIcon } from 'lucide-react';
 import { supabase, supabaseAdmin } from '@/lib/supabase';
 import BlogForm from '@/components/admin/BlogForm';
-import SimpleImageManager from '@/components/admin/SimpleImageManager';
+import PageImageManager from '@/components/admin/PageImageManager';
 
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -22,15 +22,15 @@ export default function AdminPanel() {
 
   // Pages that need image management
   const pages = [
-    { path: '/', name: 'Ana Sayfa', images: { hero: '', services: '', testimonials: '' } },
-    { path: '/yuz-estetigi/rhinoplasty', name: 'Burun Estetiği', images: { main: '', process: '', results: '' } },
-    { path: '/yuz-estetigi/face-lift', name: 'Yüz Germe', images: { main: '', process: '', results: '' } },
-    { path: '/yuz-estetigi/blepharoplasty', name: 'Göz Kapağı', images: { main: '', process: '', results: '' } },
-    { path: '/gogus-estetigi/gogus-buyutme', name: 'Göğüs Büyütme', images: { main: '', process: '', results: '' } },
-    { path: '/vucut-estetigi/liposuction', name: 'Liposuction', images: { main: '', process: '', results: '' } },
-    { path: '/vucut-estetigi/tummy-tuck', name: 'Karın Germe', images: { main: '', process: '', results: '' } },
-    { path: '/sac-ekimi/fue', name: 'FUE Saç Ekimi', images: { main: '', process: '', results: '' } },
-    { path: '/dis-estetigi/hollywood-smile', name: 'Hollywood Smile', images: { main: '', process: '', results: '' } },
+    { path: '/', name: 'Ana Sayfa', slots: ['hero-bg', 'hero-main'] },
+    { path: '/yuz-estetigi/rhinoplasty', name: 'Burun Estetiği', slots: ['hero-main', 'process-main', 'results-main'] },
+    { path: '/yuz-estetigi/face-lift', name: 'Yüz Germe', slots: ['hero-main', 'process-main', 'results-main'] },
+    { path: '/yuz-estetigi/blepharoplasty', name: 'Göz Kapağı', slots: ['hero-main', 'process-main', 'results-main'] },
+    { path: '/gogus-estetigi/gogus-buyutme', name: 'Göğüs Büyütme', slots: ['hero-main', 'process-main', 'results-main'] },
+    { path: '/vucut-estetigi/liposuction', name: 'Liposuction', slots: ['hero-main', 'process-main', 'results-main'] },
+    { path: '/vucut-estetigi/tummy-tuck', name: 'Karın Germe', slots: ['hero-main', 'process-main', 'results-main'] },
+    { path: '/sac-ekimi/fue', name: 'FUE Saç Ekimi', slots: ['hero-main', 'process-main', 'results-main'] },
+    { path: '/dis-estetigi/hollywood-smile', name: 'Hollywood Smile', slots: ['hero-main', 'process-main', 'results-main'] },
   ];
 
   useEffect(() => {
@@ -72,10 +72,27 @@ export default function AdminPanel() {
     // Implementation here
   };
 
-  const handlePageImageSave = async (page: any, images: Record<string, string>) => {
-    // Save images to database
-    console.log('Saving images for page:', page.path, images);
-    // TODO: Implement API call to save images
+  const handlePageImageSave = async (images: Record<string, string>) => {
+    if (!selectedPage) return;
+
+    try {
+      const response = await fetch('/api/save-page-images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pagePath: selectedPage.path,
+          images,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSelectedPage(null);
+      }
+    } catch (error) {
+      console.error('Error saving images:', error);
+      alert('Görseller kaydedilemedi. Lütfen tekrar deneyin.');
+    }
   };
 
   if (!isAuthenticated) {
@@ -217,13 +234,11 @@ export default function AdminPanel() {
       </div>
 
       {selectedPage && (
-        <SimpleImageManager
+        <PageImageManager
           pagePath={selectedPage.path}
-          images={selectedPage.images}
-          onSave={async (images) => {
-            await handlePageImageSave(selectedPage, images);
-            setSelectedPage(null);
-          }}
+          pageName={selectedPage.name}
+          imageSlots={selectedPage.slots}
+          onSave={handlePageImageSave}
           onClose={() => setSelectedPage(null)}
         />
       )}
