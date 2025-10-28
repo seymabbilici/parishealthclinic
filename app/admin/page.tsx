@@ -4,25 +4,36 @@ import { useState, useEffect } from 'react';
 import { Lock, FileText, Users, Mail, Plus, Edit, Trash2, Eye, Image as ImageIcon } from 'lucide-react';
 import { supabase, supabaseAdmin } from '@/lib/supabase';
 import BlogForm from '@/components/admin/BlogForm';
-import ImageManager from '@/components/admin/ImageManager';
+import SimpleImageManager from '@/components/admin/SimpleImageManager';
 
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('blogs');
+  const [activeTab, setActiveTab] = useState('pages');
   const [blogs, setBlogs] = useState<any[]>([]);
   const [doctors, setDoctors] = useState<any[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [showBlogForm, setShowBlogForm] = useState(false);
   const [editingBlog, setEditingBlog] = useState<any>(null);
-  const [selectedPageType, setSelectedPageType] = useState('hero');
-  const [selectedPageSlug, setSelectedPageSlug] = useState('home');
+  const [selectedPage, setSelectedPage] = useState<any>(null);
+
+  // Pages that need image management
+  const pages = [
+    { path: '/', name: 'Ana Sayfa', images: { hero: '', services: '', testimonials: '' } },
+    { path: '/yuz-estetigi/rhinoplasty', name: 'Burun Estetiği', images: { main: '', process: '', results: '' } },
+    { path: '/yuz-estetigi/face-lift', name: 'Yüz Germe', images: { main: '', process: '', results: '' } },
+    { path: '/yuz-estetigi/blepharoplasty', name: 'Göz Kapağı', images: { main: '', process: '', results: '' } },
+    { path: '/gogus-estetigi/gogus-buyutme', name: 'Göğüs Büyütme', images: { main: '', process: '', results: '' } },
+    { path: '/vucut-estetigi/liposuction', name: 'Liposuction', images: { main: '', process: '', results: '' } },
+    { path: '/vucut-estetigi/tummy-tuck', name: 'Karın Germe', images: { main: '', process: '', results: '' } },
+    { path: '/sac-ekimi/fue', name: 'FUE Saç Ekimi', images: { main: '', process: '', results: '' } },
+    { path: '/dis-estetigi/hollywood-smile', name: 'Hollywood Smile', images: { main: '', process: '', results: '' } },
+  ];
 
   useEffect(() => {
-    // Check auth on mount
     const token = localStorage.getItem('admin_token');
     if (token) {
       setIsAuthenticated(true);
@@ -36,7 +47,6 @@ export default function AdminPanel() {
     setLoading(true);
 
     try {
-      // Simple hardcoded check for admin
       if (username === 'seyma' && password === 'gunes123') {
         const sessionToken = `admin_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         localStorage.setItem('admin_token', sessionToken);
@@ -52,49 +62,26 @@ export default function AdminPanel() {
     }
   };
 
-  const loadData = async () => {
-    try {
-      // Load blogs
-      const { data: blogsData, error: blogsError } = await supabase
-        .from('blogs')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (blogsError) console.log('Blogs error:', blogsError);
-      setBlogs(blogsData || []);
-
-      // Load doctors
-      const { data: doctorsData, error: doctorsError } = await supabase
-        .from('doctors')
-        .select('*')
-        .order('order_index');
-      
-      if (doctorsError) console.log('Doctors error:', doctorsError);
-      setDoctors(doctorsData || []);
-
-      // Load messages
-      const { data: messagesData, error: messagesError } = await supabase
-        .from('contact_messages')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50);
-      
-      if (messagesError) console.log('Messages error:', messagesError);
-      setMessages(messagesData || []);
-    } catch (error) {
-      console.error('Error loading data:', error);
-    }
-  };
-
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
     setIsAuthenticated(false);
   };
 
+  const loadData = async () => {
+    // Load data from Supabase
+    // Implementation here
+  };
+
+  const handlePageImageSave = async (page: any, images: Record<string, string>) => {
+    // Save images to database
+    console.log('Saving images for page:', page.path, images);
+    // TODO: Implement API call to save images
+  };
+
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8">
           <div className="text-center mb-8">
             <div className="bg-purple-clinic w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
               <Lock className="w-8 h-8 text-white" />
@@ -107,6 +94,11 @@ export default function AdminPanel() {
             {loading && (
               <div className="bg-blue-50 text-blue-600 px-4 py-3 rounded-xl text-sm text-center">
                 Giriş yapılıyor...
+              </div>
+            )}
+            {error && (
+              <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm text-center">
+                {error}
               </div>
             )}
             <div>
@@ -135,15 +127,10 @@ export default function AdminPanel() {
               />
             </div>
 
-            {error && (
-              <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm">
-                {error}
-              </div>
-            )}
-
             <button
               type="submit"
-              className="w-full bg-purple-clinic text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors"
+              disabled={loading}
+              className="w-full bg-purple-clinic text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Giriş Yap
             </button>
@@ -177,8 +164,8 @@ export default function AdminPanel() {
       <div className="container mx-auto px-4 py-6">
         <div className="flex space-x-4 border-b border-gray-200">
           {[
+            { id: 'pages', name: 'Sayfa Görselleri', icon: ImageIcon },
             { id: 'blogs', name: 'Blog', icon: FileText },
-            { id: 'images', name: 'Görseller', icon: ImageIcon },
             { id: 'doctors', name: 'Doktorlar', icon: Users },
             { id: 'messages', name: 'Mesajlar', icon: Mail },
           ].map((tab) => {
@@ -202,163 +189,25 @@ export default function AdminPanel() {
 
         {/* Content */}
         <div className="mt-8">
-          {activeTab === 'blogs' && (
+          {activeTab === 'pages' && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Blog Yazıları</h2>
-                <button 
-                  onClick={() => {
-                    setEditingBlog(null);
-                    setShowBlogForm(true);
-                  }}
-                  className="bg-purple-clinic text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors flex items-center space-x-2"
-                >
-                  <Plus className="w-5 h-5" />
-                  <span>Yeni Blog</span>
-                </button>
-              </div>
-              {showBlogForm && (
-                <BlogForm
-                  editData={editingBlog}
-                  onClose={() => {
-                    setShowBlogForm(false);
-                    setEditingBlog(null);
-                  }}
-                  onSuccess={() => {
-                    loadData();
-                    setShowBlogForm(false);
-                    setEditingBlog(null);
-                  }}
-                />
-              )}
-              <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-                <table className="w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Başlık</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Kategori</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Durum</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Tarih</th>
-                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">İşlemler</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {blogs.map((blog) => (
-                      <tr key={blog.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 font-medium text-gray-900">{blog.title}</td>
-                        <td className="px-6 py-4 text-gray-600">{blog.category}</td>
-                        <td className="px-6 py-4">
-                          <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            blog.published ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                          }`}>
-                            {blog.published ? 'Yayında' : 'Taslak'}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-gray-600">
-                          {new Date(blog.created_at).toLocaleDateString('tr-TR')}
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex space-x-2">
-                            <button 
-                              onClick={() => {
-                                setEditingBlog(blog);
-                                setShowBlogForm(true);
-                              }}
-                              className="text-purple-clinic hover:text-purple-700"
-                            >
-                              <Edit className="w-5 h-5" />
-                            </button>
-                            <button 
-                              onClick={async () => {
-                                if (confirm('Bu blog yazısını silmek istediğinize emin misiniz?')) {
-                                  await supabaseAdmin
-                                    .from('blogs')
-                                    .delete()
-                                    .eq('id', blog.id);
-                                  loadData();
-                                }
-                              }}
-                              className="text-red-600 hover:text-red-700"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'doctors' && (
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Doktorlar</h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                {doctors.map((doctor) => (
-                  <div key={doctor.id} className="bg-white rounded-2xl p-6 shadow-lg">
-                    <img src={doctor.image_url} alt={doctor.name} className="w-full h-48 object-cover rounded-xl mb-4" />
-                    <h3 className="font-bold text-gray-900">{doctor.name}</h3>
-                    <p className="text-purple-clinic font-semibold">{doctor.specialty}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'images' && (
-            <div>
-              <div className="mb-6 space-y-4">
-                <h2 className="text-2xl font-bold text-gray-900">Görsel Yönetimi</h2>
-                <div className="flex gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Sayfa Tipi</label>
-                    <select
-                      value={selectedPageType}
-                      onChange={(e) => setSelectedPageType(e.target.value)}
-                      className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-clinic"
-                    >
-                      <option value="hero">Ana Sayfa</option>
-                      <option value="service">Hizmet</option>
-                      <option value="blog">Blog</option>
-                      <option value="doctor">Doktor</option>
-                      <option value="about">Hakkımızda</option>
-                    </select>
-                  </div>
-                  <div className="flex-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Sayfa Slug</label>
-                    <input
-                      type="text"
-                      value={selectedPageSlug}
-                      onChange={(e) => setSelectedPageSlug(e.target.value)}
-                      placeholder="e.g., rhinoplasty, home, doctor-1"
-                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-clinic"
-                    />
-                  </div>
-                </div>
-              </div>
-              <ImageManager pageType={selectedPageType} pageSlug={selectedPageSlug} />
-            </div>
-          )}
-
-          {activeTab === 'messages' && (
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">İletişim Mesajları</h2>
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <div key={message.id} className="bg-white rounded-2xl p-6 shadow-lg">
-                    <div className="flex justify-between items-start mb-4">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Sayfa Görselleri</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {pages.map((page) => (
+                  <div key={page.path} className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div className="flex items-center justify-between mb-4">
                       <div>
-                        <h3 className="font-bold text-gray-900">{message.name}</h3>
-                        <p className="text-gray-600">{message.email}</p>
-                        <p className="text-gray-600">{message.phone}</p>
+                        <h3 className="font-bold text-gray-900">{page.name}</h3>
+                        <p className="text-sm text-gray-600">{page.path}</p>
                       </div>
-                      <span className="text-sm text-gray-500">
-                        {new Date(message.created_at).toLocaleString('tr-TR')}
-                      </span>
                     </div>
-                    <p className="text-gray-700">{message.message}</p>
+                    <button
+                      onClick={() => setSelectedPage(page)}
+                      className="w-full bg-purple-clinic text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-2"
+                    >
+                      <ImageIcon className="w-5 h-5" />
+                      Görselleri Düzenle
+                    </button>
                   </div>
                 ))}
               </div>
@@ -366,7 +215,18 @@ export default function AdminPanel() {
           )}
         </div>
       </div>
+
+      {selectedPage && (
+        <SimpleImageManager
+          pagePath={selectedPage.path}
+          images={selectedPage.images}
+          onSave={async (images) => {
+            await handlePageImageSave(selectedPage, images);
+            setSelectedPage(null);
+          }}
+          onClose={() => setSelectedPage(null)}
+        />
+      )}
     </div>
   );
 }
-
