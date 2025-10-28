@@ -49,7 +49,7 @@ export default function PageImageManager({
       formData.append('file', file);
       formData.append('folder', 'pages');
 
-      const response = await fetch('/api/upload-image', {
+      const response = await fetch('/api/simple-upload', {
         method: 'POST',
         body: formData,
       });
