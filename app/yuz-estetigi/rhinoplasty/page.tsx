@@ -402,7 +402,7 @@ export default function Rhinoplasty() {
               Hayalinizdeki Burna Bugün Kavuşun!
             </h2>
             <p className="text-xl text-white/90 mb-8">
-              İstanbul'da uzman cerrahlarla profesyonel burun estetiği. En iyi fiyatlar, doğal sonuçlar.
+              İstanbul&apos;da uzman cerrahlarla profesyonel burun estetiği. En iyi fiyatlar, doğal sonuçlar.
               Ücretsiz danışmanlık mevcut!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
