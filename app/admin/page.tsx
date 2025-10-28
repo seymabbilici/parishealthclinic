@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Lock, FileText, Users, Mail, Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { Lock, FileText, Users, Mail, Plus, Edit, Trash2, Eye, Image as ImageIcon } from 'lucide-react';
 import { supabase, supabaseAdmin } from '@/lib/supabase';
 import BlogForm from '@/components/admin/BlogForm';
+import ImageManager from '@/components/admin/ImageManager';
 
 export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -17,6 +18,8 @@ export default function AdminPanel() {
   const [loading, setLoading] = useState(false);
   const [showBlogForm, setShowBlogForm] = useState(false);
   const [editingBlog, setEditingBlog] = useState<any>(null);
+  const [selectedPageType, setSelectedPageType] = useState('hero');
+  const [selectedPageSlug, setSelectedPageSlug] = useState('home');
 
   useEffect(() => {
     // Check auth on mount
@@ -175,6 +178,7 @@ export default function AdminPanel() {
         <div className="flex space-x-4 border-b border-gray-200">
           {[
             { id: 'blogs', name: 'Blog', icon: FileText },
+            { id: 'images', name: 'Görseller', icon: ImageIcon },
             { id: 'doctors', name: 'Doktorlar', icon: Users },
             { id: 'messages', name: 'Mesajlar', icon: Mail },
           ].map((tab) => {
@@ -300,6 +304,41 @@ export default function AdminPanel() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {activeTab === 'images' && (
+            <div>
+              <div className="mb-6 space-y-4">
+                <h2 className="text-2xl font-bold text-gray-900">Görsel Yönetimi</h2>
+                <div className="flex gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Sayfa Tipi</label>
+                    <select
+                      value={selectedPageType}
+                      onChange={(e) => setSelectedPageType(e.target.value)}
+                      className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-clinic"
+                    >
+                      <option value="hero">Ana Sayfa</option>
+                      <option value="service">Hizmet</option>
+                      <option value="blog">Blog</option>
+                      <option value="doctor">Doktor</option>
+                      <option value="about">Hakkımızda</option>
+                    </select>
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Sayfa Slug</label>
+                    <input
+                      type="text"
+                      value={selectedPageSlug}
+                      onChange={(e) => setSelectedPageSlug(e.target.value)}
+                      placeholder="e.g., rhinoplasty, home, doctor-1"
+                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-clinic"
+                    />
+                  </div>
+                </div>
+              </div>
+              <ImageManager pageType={selectedPageType} pageSlug={selectedPageSlug} />
             </div>
           )}
 
