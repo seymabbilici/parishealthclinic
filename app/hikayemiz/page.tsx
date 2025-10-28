@@ -14,7 +14,7 @@ export default function Hikayemiz() {
               Hikayemiz
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed">
-              Yıllarca süren tutku ve özveri ile kurduğumuz Paris Health Clinic'in hikayesi
+              Yıllarca süren tutku ve özveri ile kurduğumuz Paris Health Clinic&apos;in hikayesi
             </p>
           </div>
         </div>
