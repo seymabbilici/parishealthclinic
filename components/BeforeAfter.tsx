@@ -1,168 +1,270 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-
-const beforeAfterImages = [
-  {
-    id: 1,
-    before: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=800&h=1000&fit=crop',
-    after: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=1000&fit=crop',
-    title: 'Rhinoplasty (Burun Estetiği)',
-    category: 'Yüz Estetiği',
-  },
-  {
-    id: 2,
-    before: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=1000&fit=crop',
-    after: 'https://images.unsplash.com/photo-1571019614286-e5b8a7c3e23e?w=800&h=1000&fit=crop',
-    title: 'Breast Aesthetics (Göğüs Estetiği)',
-    category: 'Vücut Estetiği',
-  },
-  {
-    id: 3,
-    before: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=1000&fit=crop',
-    after: 'https://images.unsplash.com/photo-1571019614286-e5b8a7c3e23e?w=800&h=1000&fit=crop',
-    title: 'Face Lift (Yüz Germe)',
-    category: 'Anti-Aging',
-  },
-];
+import { ChevronLeft, ChevronRight, ArrowRight, CheckCircle2, Star } from 'lucide-react';
 
 export default function BeforeAfter() {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(50);
+  const [isDragging, setIsDragging] = useState(false);
+  const rafRef = useRef<number | null>(null);
 
-  const currentImage = beforeAfterImages[currentIndex];
+  const beforeImage = '/images/before-after-rhinoplasty-before.jpg';
+  const afterImage = '/images/before-after-rhinoplasty-after.jpg';
 
-  const nextImage = () => {
-    setCurrentIndex((prev) => (prev + 1) % beforeAfterImages.length);
-    setSliderPosition(50);
-  };
+  // Optimized mouse move handler
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    
+    const target = e.currentTarget;
+    const clientX = e.clientX;
+    
+    if (!target) return;
+    
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+    }
 
-  const prevImage = () => {
-    setCurrentIndex((prev) => (prev - 1 + beforeAfterImages.length) % beforeAfterImages.length);
-    setSliderPosition(50);
-  };
+    rafRef.current = requestAnimationFrame(() => {
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const percent = Math.min(Math.max((x / rect.width) * 100, 0), 100);
+      setSliderPosition(percent);
+    });
+  }, [isDragging]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isDragging || e.touches.length === 0) return;
+    
+    const target = e.currentTarget;
+    const touchX = e.touches[0].clientX;
+    
+    if (!target) return;
+    
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+    }
+
+    rafRef.current = requestAnimationFrame(() => {
+      if (!target) return;
+      const rect = target.getBoundingClientRect();
+      const x = touchX - rect.left;
+      const percent = Math.min(Math.max((x / rect.width) * 100, 0), 100);
+      setSliderPosition(percent);
+    });
+  }, [isDragging]);
+
+  const handleMouseDown = useCallback(() => {
+    setIsDragging(true);
+  }, []);
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, []);
 
   return (
-    <section className="py-20 lg:py-28">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-            <span className="text-purple-clinic">Başarılı</span> Sonuçlarımız
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Binlerce mutlu müşterimizin önce ve sonra fotoğrafları
-          </p>
-        </motion.div>
-
-        <div className="max-w-5xl mx-auto">
-          {/* Image Slider */}
-          <div className="relative mb-8 rounded-2xl overflow-hidden shadow-2xl">
-            <div
-              className="relative w-full h-[400px] lg:h-[600px] cursor-ew-resize"
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const percent = (x / rect.width) * 100;
-                setSliderPosition(Math.min(Math.max(percent, 0), 100));
-              }}
-              style={{ touchAction: 'none' }}
-            >
-              {/* Before Image */}
-              <div className="absolute inset-0">
-                <img
-                  src={currentImage.before}
-                  alt={`${currentImage.title} - Öncesi`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* After Image */}
+    <section className="py-16 lg:py-24 bg-gradient-to-br from-purple-50 via-white to-purple-50/30 relative overflow-hidden">
+      {/* Background Decoration */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-purple-100/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-100/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      
+      <div className="container mx-auto px-4 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
+          
+          {/* Left Side - Image Slider */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="relative"
+          >
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl mx-auto w-full max-w-[500px]">
               <div
-                className="absolute inset-0 overflow-hidden"
-                style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
+                className="relative w-full h-[450px] lg:h-[550px] select-none rounded-3xl bg-gradient-to-br from-purple-600 to-purple-300 p-[4px] cursor-ew-resize group"
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleMouseUp}
+                style={{ touchAction: 'none' }}
               >
-                <img
-                  src={currentImage.after}
-                  alt={`${currentImage.title} - Sonrası`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+                {/* Background gradient border */}
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-purple-600 via-purple-500 to-purple-400 opacity-90 group-hover:opacity-100 transition-opacity" />
+                
+                {/* White inner background */}
+                <div className="absolute inset-[4px] rounded-3xl bg-white" />
+                
+                {/* Before Image */}
+                <div className="absolute inset-[4px] rounded-3xl overflow-hidden">
+                  <img
+                    src={beforeImage}
+                    alt="Burun Estetiği - Öncesi"
+                    className="w-full h-full object-cover"
+                    loading="eager"
+                    decoding="async"
+                  />
+                  {/* Before Label */}
+                  <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                    ÖNCESİ
+                  </div>
+                </div>
 
-              {/* Slider Line */}
-              <div
-                className="absolute top-0 bottom-0 w-1 bg-white shadow-lg"
-                style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
-              >
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
-                  <ChevronLeft className="w-4 h-4 text-purple-clinic" />
-                  <ChevronRight className="w-4 h-4 text-purple-clinic" />
+                {/* After Image */}
+                <div
+                  className="absolute inset-[4px] rounded-3xl overflow-hidden"
+                  style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
+                >
+                  <img
+                    src={afterImage}
+                    alt="Burun Estetiği - Sonrası"
+                    className="w-full h-full object-cover"
+                    loading="eager"
+                    decoding="async"
+                  />
+                  {/* After Label */}
+                  <div className="absolute bottom-4 right-4 bg-purple-clinic/90 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                    SONRASI
+                  </div>
+                </div>
+
+                {/* Slider Line */}
+                <div
+                  className="absolute top-[4px] bottom-[4px] w-1 bg-white shadow-2xl z-20"
+                  style={{ 
+                    left: `${sliderPosition}%`, 
+                    transform: 'translateX(-50%)',
+                    boxShadow: '0 0 20px rgba(139, 92, 246, 0.5)',
+                    willChange: 'left'
+                  }}
+                >
+                  {/* Slider Handle */}
+                  <div
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-2xl flex items-center justify-center cursor-ew-resize hover:scale-110 transition-transform border-2 border-purple-clinic"
+                    onMouseDown={handleMouseDown}
+                    onTouchStart={handleMouseDown}
+                  >
+                    <ChevronLeft className="w-5 h-5 text-purple-clinic" />
+                    <ChevronRight className="w-5 h-5 text-purple-clinic -ml-1" />
+                  </div>
                 </div>
               </div>
-
-              {/* Labels */}
-              <div className="absolute bottom-4 left-4 bg-black/70 text-white px-4 py-2 rounded-lg">
-                <div className="text-sm font-semibold">Öncesi</div>
-              </div>
-              <div className="absolute bottom-4 right-4 bg-black/70 text-white px-4 py-2 rounded-lg">
-                <div className="text-sm font-semibold">Sonrası</div>
-              </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Navigation */}
-          <div className="flex items-center justify-between">
-            <button
-              onClick={prevImage}
-              className="bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow hover:bg-gray-50"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-
-            <div className="flex-1 mx-6">
-              <h3 className="text-2xl font-bold text-gray-900 text-center mb-2">
-                {currentImage.title}
-              </h3>
-              <p className="text-purple-clinic text-center font-semibold">
-                {currentImage.category}
-              </p>
+          {/* Right Side - Content */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-center lg:text-left"
+          >
+            {/* Badge */}
+            <div className="inline-block mb-5">
+              <span className="px-5 py-2 rounded-full text-sm font-semibold bg-purple-100 text-purple-clinic border border-purple-200">
+                Burun Estetiği - Öncesi ve Sonrası
+              </span>
             </div>
 
-            <button
-              onClick={nextImage}
-              className="bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow hover:bg-gray-50"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-          </div>
+            {/* Heading */}
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Hayalinizdeki Dokunuşlara<br />
+              <span className="text-purple-clinic">Ulaşmak İster misiniz?</span>
+            </h2>
 
-          {/* Dots */}
-          <div className="flex justify-center space-x-2 mt-6">
-            {beforeAfterImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setCurrentIndex(index);
-                  setSliderPosition(50);
-                }}
-                className={`transition-all ${
-                  index === currentIndex
-                    ? 'w-8 bg-purple-clinic'
-                    : 'w-2 bg-gray-300'
-                } h-2 rounded-full`}
-              />
-            ))}
-          </div>
+            {/* Description */}
+            <p className="text-lg md:text-xl text-gray-600 mb-8 leading-relaxed max-w-xl lg:max-w-none mx-auto lg:mx-0">
+              Paris Health Clinic ile güvenli, kaliteli ve sonuç odaklı estetik çözümler için bugün bize ulaşın. İlk danışmanlığınız ücretsiz!
+            </p>
+
+            {/* Benefits */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              {[
+                'Uluslararası sertifikalı doktorlar',
+                'Modern teknoloji ve tesisler',
+                'Doğal ve kalıcı sonuçlar',
+                '7/24 destek hattı',
+              ].map((benefit, idx) => (
+                <div key={idx} className="flex items-center gap-3 text-left">
+                  <div className="bg-purple-100 rounded-full p-1.5">
+                    <CheckCircle2 className="w-5 h-5 text-purple-clinic" />
+                  </div>
+                  <span className="text-gray-700 font-medium">{benefit}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* CTA Button */}
+            <div className="flex flex-col sm:flex-row gap-4 lg:justify-start justify-center mb-10">
+              <a
+                href="/iletisim"
+                className="inline-flex items-center justify-center gap-3 bg-purple-clinic text-white px-8 py-4 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all font-semibold text-lg group"
+              >
+                <span>Hemen Randevu Al</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </a>
+              <a
+                href="https://wa.me/905444066234"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-3 bg-green-whatsapp text-white px-8 py-4 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all font-semibold text-lg"
+              >
+                <span>WhatsApp Danışmanlık</span>
+              </a>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="border-t border-gray-200 pt-8">
+              <p className="text-sm text-gray-500 mb-4">Bize Güvenen Platformlar</p>
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 opacity-70 hover:opacity-100 transition-opacity">
+                {[
+                  { name: 'Google', src: 'https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg' },
+                  { name: 'RealSelf', src: 'https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/realself.svg' },
+                  { name: 'Trustpilot', src: 'https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/trustpilot.svg' },
+                  { name: 'WhatClinic', src: 'https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/whatclinic.svg' },
+                  { name: 'ProvenExpert', src: 'https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/provenexpert.svg' },
+                ].map((logo) => (
+                  <div key={logo.name} className="h-7 flex items-center grayscale hover:grayscale-0 transition-all cursor-pointer">
+                    <img
+                      src={logo.src}
+                      alt={logo.name}
+                      className="h-7 w-auto"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                ))}
+              </div>
+              
+              {/* Rating */}
+              <div className="flex items-center justify-center lg:justify-start gap-2 mt-6">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                  ))}
+                </div>
+                <span className="text-gray-700 font-semibold">4.9/5</span>
+                <span className="text-gray-500 text-sm">(500+ değerlendirme)</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 }
-

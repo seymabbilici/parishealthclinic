@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import WhatsAppFloatingButton from "@/components/WhatsAppFloatingButton";
 
 const jakarta = Plus_Jakarta_Sans({ 
   subsets: ["latin"],
@@ -20,7 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr">
-      <body className={jakarta.className}>{children}</body>
+      <body className={jakarta.className}>
+        {children}
+        <WhatsAppFloatingButton />
+      </body>
     </html>
   );
 }

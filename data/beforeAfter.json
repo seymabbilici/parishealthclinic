@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "title": "Rhinoplasty (Burun Estetiği)",
+    "category": "Yüz Estetiği",
+    "before": "/images/before-after-rhinoplasty-before.jpg",
+    "after": "/images/before-after-rhinoplasty-after.jpg"
+  },
+  {
+    "id": 2,
+    "title": "Face Lift (Yüz Germe)",
+    "category": "Anti-Aging",
+    "before": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=1000&fit=crop",
+    "after": "https://images.unsplash.com/photo-1571019614286-e5b8a7c3e23e?w=800&h=1000&fit=crop"
+  },
+  {
+    "id": 3,
+    "title": "Blefaroplasti (Göz Kapağı Estetiği)",
+    "category": "Yüz Estetiği",
+    "before": "https://images.unsplash.com/photo-1605976075453-cf0f0cfb5d5a?w=800&h=1000&fit=crop&q=80",
+    "after": "https://images.unsplash.com/photo-1605976075453-cf0f0cfb5d5a?w=800&h=1000&fit=crop&q=80&sat=10&bri=105"
+  },
+  {
+    "id": 4,
+    "title": "Breast Aesthetics (Göğüs Estetiği)",
+    "category": "Vücut Estetiği",
+    "before": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=1000&fit=crop",
+    "after": "https://images.unsplash.com/photo-1571019614286-e5b8a7c3e23e?w=800&h=1000&fit=crop"
+  }
+]

@@ -35,7 +35,7 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section id="reviews" className="py-20 lg:py-28">
+    <section id="reviews" className="py-20 lg:py-28 bg-gradient-to-b from-purple-50/50 to-white">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -44,6 +44,9 @@ export default function Testimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
+          <span className="inline-block px-4 py-2 rounded-full text-sm font-semibold bg-purple-100 text-purple-clinic mb-4">
+            Müşteri Yorumları
+          </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
             Müşterilerimiz <span className="text-purple-clinic">Ne Diyor?</span>
           </h2>
@@ -60,9 +63,9 @@ export default function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all"
+              className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all border border-gray-100"
             >
-              <div className="flex items-center mb-4">
+              <div className="flex items-center mb-6">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <Star
                     key={i}
@@ -71,9 +74,9 @@ export default function Testimonials() {
                 ))}
               </div>
 
-              <div className="mb-4">
-                <Quote className="w-8 h-8 text-purple-clinic/20 mb-2" />
-                <p className="text-gray-600 leading-relaxed italic">
+              <div className="mb-6">
+                <Quote className="w-10 h-10 text-purple-clinic/20 mb-4" />
+                <p className="text-gray-700 leading-relaxed text-base">
                   &quot;{testimonial.text}&quot;
                 </p>
               </div>

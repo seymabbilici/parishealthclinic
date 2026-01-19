@@ -18,6 +18,9 @@ export default function VideoSection() {
           className="max-w-5xl mx-auto"
         >
           <div className="text-center mb-12">
+            <span className="inline-block px-4 py-2 rounded-full text-sm font-semibold bg-purple-100 text-purple-clinic mb-4">
+              Hikayemiz
+            </span>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
               Hikayemizi <span className="text-purple-clinic">Dinleyin</span>
             </h2>
@@ -33,7 +36,7 @@ export default function VideoSection() {
               >
                 {/* Thumbnail */}
                 <img
-                  src="https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=1200&h=675&fit=crop"
+                  src="/images/video-thumbnail.jpg"
                   alt="Video thumbnail"
                   className="w-full h-full object-cover"
                 />
